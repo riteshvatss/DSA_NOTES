@@ -1,0 +1,192 @@
+//to build a bst
+    public static Node buildtree(Node root,int val){
+        //num++;
+        if(root==null){
+            root =new Node(val);
+            return root;
+        }
+        if(root.data>val){
+            root.left=buildtree(root.left,val);
+        }else{
+            root.right=buildtree(root.right,val);
+        }
+        return root;
+
+    }
+
+        int[] arr={5,1,3,4,2,7};
+        Node root=null;
+        for(int i=0;i<arr.length;i++){
+            root=buildtree(root, arr[i]);
+        }
+
+
+//for search in BST
+  public static boolean searchIt(Node root,int val){
+        if(root==null){
+            return false;
+        }
+        boolean lf=false,rf=false;
+        if(root.data==val){
+            return true;
+        }else if(root.data<val){
+           rf= searchIt(root.right, val);
+        }else{
+            lf=searchIt(root.left, val);
+        }
+        if(lf||rf){
+            return true;
+        }
+        return false;
+    }
+
+//to delete a node in BST
+public static Node deleteit(Node root,int val){
+        if(root==null){
+            return null;
+        }
+        if(root.data==val){
+           // System.out.print("w");
+            if(root.left==null&&root.right==null){
+               // System.out.print("m");
+             //   root=null;
+                 return null;
+            }else if(root.left!=null&&root.right!=null){
+
+                //in ordersuccesor is leftmost node in right subtree
+              Node IS=findInordrsuccsr(root.right);
+              root.data=IS.data;
+              root.right=deleteit(root.right,IS.data); 
+            
+            }else{
+                if(root.left!=null){
+                    return root.left;
+                }else{
+                    return root.right;
+                }
+                // return;
+                 //System.out.print("m2");
+                
+            }
+        }
+        if(root.data<val){
+            deleteit(root.right,val);
+        }else{
+            deleteit(root.left,val);
+        }
+        return root;
+
+    }
+    public static Node findInordrsuccsr(Node root){
+        while(root.left!=null){
+            root=root.left;
+        }return root;
+    }  
+
+//for print node in a particulat range
+    public static void printRange(Node root,int k1,int k2){
+        if(root==null){
+            return;
+        }
+        if(root.data>=k1&&root.data<=k2){
+             
+            printRange(root.left, k1, k2);
+
+            //print will be in middle so the output canbe in an order
+           System.out.print(root.data+" ");
+            printRange(root.right, k1, k2);
+        }else if(root.data>k2){
+            printRange(root.left, k1, k2);
+        }else{
+            printRange(root.right, k1, k2);
+        }
+    }
+
+//for root to leaf Path
+
+    public static void printit(Node root,ArrayList<Integer> al){
+        if(root==null){
+            return;
+        }
+            
+        al.add(root.data);
+
+
+
+        if(root.left==null&&root.right==null){
+             System.out.println();
+             for(int i=0;i<al.size();i++){
+                System.out.print(al.get(i)+" ");
+            }//return;
+        }
+
+      
+        printit(root.left, al);
+        //al.remove(al.size()-1);
+        printit(root.right, al);
+        al.remove(al.size()-1);
+      //  System.out.println(validateit(root));
+
+}
+
+//Mirror of BST
+    public static Node mirrorIt(Node root){
+        if(root==null){
+            return null;
+        }
+        Node lf=mirrorIt(root.left);
+        Node rf=mirrorIt(root.right);
+        root.left=rf;
+        root.right=lf;
+        return root;
+    }
+
+//VAlidata a BST
+
+ public static boolean validateit(Node root,Node min,Node max){
+       if(root==null){
+        return true;
+       }
+       else if(min!=null&&root.data<=min.data){
+        return false;
+       }
+       else if(max!=null&&root.data>=max.data){
+        return false;
+       }
+       return validateit(root.left, min, root)&&validateit(root.right, root, max);
+        
+    }
+
+//calling a it --->System.out.print(validateit(root,null,null)+" ");
+
+//Sorted Array to BST
+ public static Node balancedBst(int[] arr,int strt,int end){
+        if(strt>end){
+            return null;
+        }
+        int mid=(strt+end)/2;
+        Node root=new Node(arr[mid]);
+        root.left=balancedBst(arr, strt, mid-1);
+        root.right=balancedBst(arr, mid+1, end);
+        return root;
+
+    }
+
+//calling the function--->balancedBst(arr, 0, arr.length-1);
+
+// merge two bST
+
+//for merging two bst first convert two bst into priorityorder
+        //then apply sorted array
+        PriorityQueue<Integer> pq=new PriorityQueue<>();
+        inorder(root1, pq);
+        inorder(root, pq);
+        int arr1[]=new int[pq.size()];
+        int i=0;
+        while(!pq.isEmpty()){
+            arr1[i]=pq.poll();
+            i++;
+
+        }
+        Node root2=balancedBst(arr1, 0, arr1.length-1);
+

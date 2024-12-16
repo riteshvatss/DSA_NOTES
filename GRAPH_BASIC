@@ -1,0 +1,442 @@
+    static class edge{
+        int src;
+        int dest;
+        int wt;
+        edge(int src,int dest,int wt){
+            this.src=src;
+            this.dest=dest;
+            this.wt=wt;
+        }
+    }
+
+    public static void main(String[] args){
+        //no.of vertex
+        int V=5;
+        //creating an array of ArryList<Edge>
+        ArrayList<edge>[] graph=new ArrayList[V];
+        //here the array of array list is created
+        //but the array contains null values that means we have to store the 
+        //void ArrayList in it
+        for(int i=0;i<V;i++){
+            graph[i]=new ArrayList<>();
+
+        }
+        //for storing data of vertex 0
+        graph[0].add(new edge(0,1,5));
+
+        //for storing data of vertex 1
+        graph[1].add(new edge(1,0,5));
+        graph[1].add(new edge(1,2,1));
+        graph[1].add(new edge(1,3,3));
+
+         //for storing data of vertex 2
+        graph[2].add(new edge(2,1,1));
+        graph[2].add(new edge(2,3,1));
+        graph[2].add(new edge(2,4,2));
+
+         //for storing data of vertex 3
+        graph[3].add(new edge(3,2,1));
+        graph[3].add(new edge(3,1,3));
+
+         //for storing data of vertex 4
+        graph[4].add(new edge(4,2,2));
+
+        //for getting the adjacecy vertex of any node
+        //let here we want to get adjacency vertex of 2
+        for(int i=0;i<graph[2].size();i++){
+            //for getting ith element of array list stored in the array of Array list
+            edge e=graph[2].get(i);  
+            //now we get the edge
+            //then we will take the dest from it
+            System.out.print(e.dest+"  ");
+        }
+    }
+    
+
+//for breadth first search in graph
+
+ public static void BFS(ArrayList<edge>[] graph,ArrayList<Integer> al){
+        boolean[] vis=new boolean[graph.length];
+        Queue<Integer> q=new LinkedList<>();
+        q.add(0);
+        while(!q.isEmpty()){
+            int curr=q.remove();
+            if(!vis[curr]){
+                vis[curr]=true;
+                al.add(curr);
+                for(int i=0;i<graph[curr].size();i++){
+                    edge e=graph[curr].get(i);
+                    q.add(e.dest);
+                }
+             }
+         }
+       }
+
+    //for DFS
+    public static void DFS(ArrayList<edge>[] graph,ArrayList<Integer> al,int curr,boolean[] vis){
+      //  boolean vis[]=new boolean[graph.length];
+      vis[curr]=true;
+      al.add(curr);
+        for(int i=0;i<graph[curr].size();i++){
+            edge e=graph[curr].get(i);
+            if(!vis[e.dest]){
+                
+                
+                DFS(graph, al, e.dest,vis);
+            }
+        }
+    }
+
+
+    // that is to find if the src to dest is path that exists or not
+    public static boolean HAshPath(int src,int dest,ArrayList<edge>[] graph,boolean vis[]){
+
+        //check if we reach our dest 
+        vis[src]=true;
+            if(src==dest){
+                return true;
+            }
+
+            // going into the loop
+        for(int i=0;i<graph[src].size();i++){
+
+            //checking for the path 
+            edge e=graph[src].get(i);
+           
+            //now our src will be updated to our new src.dest 
+                        if(!vis[e.dest]&&HAshPath( e.dest,dest, graph, vis)){
+               return true;
+            }
+        }
+        return false;
+        
+    }
+
+        //DFS for disjoint graph
+        //thta is when our graph has two graphs and they both doesnt have joint among them
+        public static void DFSmain(ArrayList<edge>[] graph,ArrayList<Integer> al){
+            boolean[] vis=new boolean[graph.length];
+            for(int i=0;i<graph.length;i++){
+                
+                DFSutil(graph, i,vis,al);
+            }
+        }
+
+	//helper function for DFS
+
+        public static void DFSutil(ArrayList<edge>[] graph,int curr,boolean[] vis,ArrayList<Integer>al ){
+            vis[curr]=true;
+            al.add(curr);
+            for(int i=0;i<graph[curr].size();i++){
+                edge e=graph[curr].get(i);
+                if(!vis[e.dest]){
+                    DFSutil(graph, e.dest, vis, al);
+                }
+            }
+        }
+
+
+        //BFS for Disjoint gRAph
+        public static void BfsMain(ArrayList<edge>[] graph,ArrayList<Integer> al){
+            boolean vis[]=new boolean[graph.length];
+            for(int i=0;i<graph.length;i++){
+                if(!vis[i]){
+                bfsutil(graph,vis,al);
+            }}
+
+        }
+
+	//helper function for bfs util
+
+        public static void bfsutil(ArrayList<edge>[] graph,boolean[] vis,ArrayList<Integer> al){
+            Queue<Integer> q=new LinkedList<>();
+            q.add(0);
+            while(!q.isEmpty()){
+            int curr=q.remove();
+            if(!vis[curr]){
+                vis[curr]=true;
+                al.add(curr);
+                for(int i=0;i<graph[curr].size();i++){
+                    edge e=graph[curr].get(i);
+                    q.add(e.dest);
+                }
+             }
+         }
+        }
+
+
+    //detection of cycle in graph
+    public static  boolean detectCycle(ArrayList<edge>[] graph){
+        boolean[] vis=new boolean[graph.length];
+
+        //if the graph is of type disjoint 
+        //that is it two conatins more than one in itself that are not joined together
+        for(int i=0;i<graph.length;i++){
+            if(!vis[i]){
+
+                return detectCycleUtil(graph,i,-1,vis);
+            }
+        }
+        return false;
+    }
+
+    public static boolean detectCycleUtil(ArrayList<edge>[] graph,int curr,int par,boolean[] vis){
+        vis[curr]=true;
+
+    
+        for(int i=0;i<graph[curr].size();i++){
+            edge e=graph[curr].get(i);
+            //checking for the diffrent cases 
+            //if the neighbr is already visited and is its not parent then its true
+            if(vis[e.dest]&&par!=e.dest){
+                return true;
+            }
+            //if its the parent of src
+            //then continue
+            else if(vis[e.dest]&&e.dest==par){
+                continue;
+            }
+            //if it not visited then we will it and and check for cycle in its child
+            else if(!vis[e.dest]){
+               if( detectCycleUtil(graph,e.dest,curr,vis)){
+                return true;
+               }
+            }
+        }
+        return false;
+    }
+//bipartite graph
+// that is to check if we can divide vertex of our graph into two u nd v sec
+public static boolean Bipatite(ArrayList<edge>[] graph){
+
+	//making a color array
+        int[] clr=new int[graph.length];
+	//initialy giving no colore to all
+        for(int i=0;i<graph.length;i++){
+            clr[i]=-1;
+        }
+        Queue<Integer> q=new LinkedList<>();
+        for(int i=0;i<graph.length;i++){
+            if(clr[i]==-1){
+                    q.add(i);
+                    clr[i]=0;
+                    while(!q.isEmpty()){
+                        int curr=q.remove();
+                        for(int j=0;j<graph[curr].size();j++){
+                            edge e=graph[curr].get(j);
+                            if(clr[e.dest]==-1){
+				//checking for the color and givig it
+                                int nextclr=clr[curr]==0?1:0;
+                                clr[e.dest]=nextclr;
+                                q.add(e.dest);
+                            }else if(clr[e.dest]==clr[curr]){
+                                return false;
+                            }
+                        }
+                    }
+                }
+        }
+return true;
+
+    }
+
+//detection of cycycle in directed graph
+    public static boolean isCycle(ArrayList<edge>[] graph){
+        boolean[] vis=new boolean[graph.length];
+        boolean[] rec=new boolean[graph.length];
+       for(int i=0;i<graph.length;i++){
+            if(!vis[i]){
+                if(isCycleUtil(graph,i,vis,rec)){
+                    return true;
+                }
+            }
+      }
+      return false;
+    }
+
+    public static boolean isCycleUtil(ArrayList<edge>[]graph,int curr,boolean[] vis,boolean[]rec){
+        vis[curr]=true;
+        rec[curr]=true;
+        for(int i=0;i<graph[curr].size();i++){
+            edge e=graph[curr].get(i);
+            if(rec[e.dest]){
+                return true;
+            }
+             if(!vis[e.dest]&&isCycleUtil(graph,e.dest,vis,rec)){
+                return true;
+            }
+        }
+        rec[curr]=false;
+        return false;
+    }
+
+//totpology sort
+//that is arranging the nodes acc to their occ 
+//that is firsty the first node will cme that points to other
+..like before step1 the step2 cant come it is like that
+
+//By DFS method
+ //this is by DFS
+    public static void topology(ArrayList<edge>[] graph){
+        boolean vis[]=new boolean[graph.length];
+        Stack<Integer> s=new Stack<>();
+        for(int i=0;i<graph.length;i++){
+            if(!vis[i]){
+                topologyUtil(graph,i,vis,s);
+            }
+        }
+      while(!s.isEmpty()){
+        System.out.print(s.pop()+"  ");
+      }
+
+
+    }
+
+
+    public static void topologyUtil(ArrayList<edge>[] graph,int curr,boolean[] vis,Stack<Integer> s){
+        vis[curr]=true;
+        for(int i=0;i<graph[curr].size();i++){
+            edge e=graph[curr].get(i);
+            int des=e.dest;
+            if(!vis[e.dest]){
+                //first goes out to all the neighbours
+                topologyUtil(graph, e.dest, vis, s);
+            }
+
+        }
+        // so the curr element in the last 
+        //in the stack last element is pop out first
+        s.push(curr);
+    }
+
+//Topology by BFS
+ //by bFS
+    //this is also called kahn algo
+    public static void topologyBFS(ArrayList<edge>[] graph){
+        int indegree[] =new int[graph.length];
+        getindgre(graph,indegree);
+
+        //now for adding the elements in the queue
+        Queue<Integer>q=new LinkedList<>();
+        for(int i=0;i<indegree.length;i++){
+            if(indegree[i]==0){
+                q.add(i);
+            }
+        }
+
+        //now bfs will play the role
+        while(!q.isEmpty()){
+            int curr=q.remove();
+            System.out.print(curr+"  ");
+            for(int i=0;i<graph[curr].size();i++){
+                edge e=graph[curr].get(i);
+                indegree[e.dest]-=1;
+                if(indegree[e.dest]==0){
+                    q.add(e.dest);
+                }
+            }
+        }
+
+
+
+    }
+    //to get the indegree values of all 
+    public static void getindgre(ArrayList<edge>[] graph,int[] indegree){
+        for(int i=0;i<graph.length;i++){
+            for(int j=0;j<graph[i].size();j++){
+                edge e=graph[i].get(j);
+                indegree[e.dest]+=1;
+            }
+        }
+    }
+
+    //for getting all the path of source to destination
+    //here we are using a string for getting path 
+
+    public static void findpath(int src,int dest,ArrayList<edge>[] graph,boolean[] vis,String path){
+        vis[src]=true;
+        //by this method we will print
+        //the path that we will get
+        if(src==dest){
+            //when ever we get the path the string will print
+            //and it will get return
+            System.out.println(path+src);
+            return;
+        }
+        for(int i=0;i<graph[src].size();i++){
+            edge e=graph[src].get(i);
+           findpath(e.dest, dest, graph, vis, path+src);
+        }
+        //al.remove(al.size()-1);
+        
+
+    }
+
+ //(dijkarts Algo) shortest path from src to all verteces(weight included)  o(V+Elog(v))
+
+ static class pair implements Comparable<pair>{
+        int node;
+        int path;
+        pair(int node,int path){
+        this.node=node;
+        this.path=path;
+     }
+
+        @Override
+        public int compareTo(pair p2){
+            return this.path-p2.path;
+        }
+
+
+    }
+
+//the main algorithm
+
+    public static void dijkartss(ArrayList<edge>[] graph,int src){
+        //making an array of distance
+        int dist[]=new int[graph.length];
+        for(int i=0;i<graph.length;i++){
+            //other than our source to source
+            //our other source to all verteces dist
+            //initialy we put 0
+            if(i!=src){
+                dist[i]=Integer.MAX_VALUE;
+            }
+        }
+        //a boolean vis
+        boolean[] vis=new boolean[graph.length];
+        PriorityQueue<pair> pq=new PriorityQueue<>();
+        //add our first pair that is src only
+        pq.add(new pair(src,0));
+        while(!pq.isEmpty()){
+            pair curr=pq.remove();
+
+            //checking our curr node is visted or not
+            if(!vis[curr.node]){
+                vis[curr.node]=true;
+                for(int i=0;i<graph[curr.node].size();i++){
+                    edge e=graph[curr.node].get(i);
+                    //here us is src
+                    int u=e.src;
+                    //here v is dest
+                    int v=e.dest;
+                    //this is the wt of u to v
+                    //that is th wt of the edge
+                    int wt=e.wt;
+                    if(dist[u]+wt<dist[v]){
+                        dist[v]=dist[u]+wt;
+                        pq.add(new pair(v,dist[v]));
+                    }
+                }
+            }
+
+        }
+
+        //for getting the dist of all verteces 
+        for(int i=0;i<dist.length;i++){
+            System.out.print(dist[i]+"  ");
+        }
+
+
+
+    }

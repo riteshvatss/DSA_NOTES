@@ -1,0 +1,422 @@
+//fibonaci
+   //by memoization
+    public static int fibb(int n,int[] dp){
+        //base case
+        if(n==1||n==0){
+            return n;
+        }
+        //if we already have value of fibb(n) then we will get that from this array
+        // and we will return it frm this only 
+        if(dp[n]!=0){
+            return dp[n];
+        }
+        //storing the value in array
+        dp[n]=fibb(n-1, dp)+fibb(n-2, dp);
+        return dp[n];
+    }
+
+
+
+    //by tabulation
+    int fibtab(int n){
+        //here we will firstly initialize an array
+        int dp[]=new int[n+1];
+        //then initializing the bottom index first
+        dp[0]=0;
+        dp[1]=1;
+        for(int i=2;i<n+1;i++){
+            //then assigning meaning to indexes
+            dp[i]=dp[i-1]+dp[i-2];
+        }
+        //returning the value
+        return dp[n];
+    }
+    public static void main(String[] args) {
+        //array to store the values
+        int n=5;
+        int dp[]=new int[n+1];
+        //passing the array of dp nd the n integer
+        System.out.println(fibb(n,dp));
+    }
+
+//climbing stairs with 2 or 1 jump at a time
+   static int countwayss(int n,int[] dp){
+
+        //its base case is this
+        //because for 0 also it has one way
+        //it can jump on itself
+        if(n==0){
+            return 1;
+        }
+        if(n<0){
+            return 0;
+        }
+        if(dp[n]!=0){
+            return dp[n];
+        }
+
+        //here we do n-1 and n-2
+        //because we can take one jump or 2 jump at same time
+        dp[n]=countwayss(n-1, dp)+countwayss(n-2,dp);
+        return dp[n];
+	//if the ask to add one more jump with three stairs at atime
+	//then also we can do by adding the one more recursion for three jumps at atime
+	//dp[n]=countwayss(n-1, dp)+countwayss(n-2,dp)+countways(n-3,dp)
+    }
+//By tabulation
+ static int BytabulationCountWays(int n){
+            //initializing the table
+            int[] dp=new int[n+1];
+            //assigning meaning to the table
+            //this is bottom up so we will assigng bottom frst
+            dp[0]=1;
+            dp[1]=1;
+            for(int i=2;i<n+1;i++){
+                //start filling
+                dp[i]=dp[i-1]+dp[i-2];
+            }
+            return dp[n];
+        }
+
+//0-1 Knapsack
+ static int knapsack(int[] val,int[] wt,int W,int idx,int[][] dp){
+        //base case
+        //if our item is ended or the keft weight is 0
+        //we can add 0 item only
+        if(W==0||idx==val.length){
+            return 0;
+        }
+        if(dp[W][idx]!=0){
+            return dp[W][idx];
+        }
+        //it means we can add this item in knapsack
+        if(wt[idx]<=W){
+            //when weight is added
+            int addwt=val[idx]+knapsack(val,wt,W-wt[idx],idx+1,dp);
+            int notaddWt=knapsack(val,wt,W,idx+1,dp);
+            dp[W][idx]=Math.max(addwt,notaddWt);
+           // return Math.max(addwt,notaddWt);
+
+        }
+        else{
+            dp[W][idx]= knapsack(val,wt,W,idx+1,dp);
+        }
+        return dp[W][idx];
+
+    }
+    //BY tabulation
+    static int knapsackTab(int[] val,int[] wt,int W){
+        int[][] dp=new int[wt.length+1][W+1];
+        for(int i=0;i<wt.length+1;i++){
+            dp[i][0]=0;
+        }
+        for(int i=0;i<W+1;i++){
+            dp[0][i]=0;
+        }
+        for(int i=1;i<wt.length+1;i++){
+            for(int j=1;j<W+1;j++){
+                //when the val can include
+                //that is wt<W
+                if(wt[i-1]<=j){
+                    //when the weight is include
+                    int n1=val[i-1]+dp[i-1][j-wt[i-1]];
+                    //when the weight is not include
+                    int n2=dp[i-1][j];
+                    dp[i][j]=Math.max(n1, n2);
+                    //return dp[i][j];
+                }
+                //when the weight is not included
+                else{
+                    dp[i][j]=dp[i-1][j];
+                  //  return dp[i][j];
+                }
+            }
+        }
+        return dp[wt.length][W];
+
+    }
+   public static void main(String[] args){
+    int val[]={15,14,10,45,30};
+    int wt[]={2,5,1,3,4};
+    int wAllow=7;
+    int dp[][]=new int[wAllow+1][wt.length];
+    System.out.println(knapsack(val,wt,wAllow,0,dp));
+    System.out.println(knapsackTab(val, wt,wAllow));
+   }   
+}
+//target sum
+//true false
+
+    //by tabulation
+    static boolean trgtSum(int[] val,int trgt){
+        boolean dp[][]=new boolean[val.length+1][trgt+1];
+        for(int i=1;i<trgt+1;i++){
+            dp[0][i]=false;
+        }
+        for(int i=0;i<val.length+1;i++){
+            dp[i][0]=true;
+        }
+        for(int i=1;i<val.length+1;i++){
+            for(int j=1;j<trgt+1;j++){
+                //when we want numb to include
+                if(val[i-1]<=j&&dp[i-1][j-val[i-1]]==true){
+                    //when we wnt to include
+                    dp[i][j]=true;
+                }
+                //when we cant add the number in it
+                else if(dp[i-1][j]){
+                    dp[i][j]=true;
+
+                }
+            }
+        }
+        return dp[val.length][trgt];
+    }
+    public static void main(String[] args){
+        int[] val={4,2,7,1,3};
+        int trgtSum=10;
+        System.out.println(trgtSum(val,trgtSum));
+    }
+//unbounded knapsack
+//it will be same as 01 
+//just when we include in knapsack the item will not be decreased or substracted
+     //BY tabulation
+     static int knapsackTab(int[] val,int[] wt,int W){
+        int[][] dp=new int[wt.length+1][W+1];
+        for(int i=0;i<wt.length+1;i++){
+            dp[i][0]=0;
+        }
+        for(int i=0;i<W+1;i++){
+            dp[0][i]=0;
+        }
+        for(int i=1;i<wt.length+1;i++){
+            for(int j=1;j<W+1;j++){
+                //when the val can include
+                //that is wt<W
+                if(wt[i-1]<=j){
+                    //when the weight is include
+                    //here we will not subtract -1 from i 
+                    //because we can use it again
+                    int n1=val[i-1]+dp[i][j-wt[i-1]];
+                    //when the weight is not include
+                    int n2=dp[i-1][j];
+                    dp[i][j]=Math.max(n1, n2);
+                    //return dp[i][j];
+                }
+                //when the weight is not included
+                else{
+                    dp[i][j]=dp[i-1][j];
+                  //  return dp[i][j];
+                }
+            }
+        }
+        return dp[wt.length][W];
+
+    }
+//it is same as of knapsack
+ //rod cuuting 
+    //that is the price of length of rod is given
+    //length of rod is given we have to find its max
+    static int findmax(int[] lngth,int[] val,int rodlength,int idx,int[][]dp){
+        if(rodlength==0||idx==lngth.length){
+            return 0;
+        }
+        if(dp[idx][rodlength]!=0){
+            return dp[idx][rodlength];
+        }
+        if(lngth[idx]<=rodlength){
+            //when we r adding
+            int n=val[idx]+findmax(lngth, val, rodlength-lngth[idx], idx+1, dp);
+            int n2=findmax(lngth, val, rodlength, idx+1, dp);
+            dp[idx][rodlength]=Math.max(n, n2);
+        }else{
+            dp[idx][rodlength]=findmax(lngth, val, rodlength, idx+1, dp);
+        }
+        return dp[idx][rodlength];
+    }
+    public static void main(String[] args){
+        int lngth[]={1,2,3,4,5,6,7,8};
+        int val[]={1,5,8,9,10,17,17,20};
+        int rodlength=8;
+         int dp[][]=new int[lngth.length+1][rodlength+1];
+        for(int i=0;i<rodlength+1;i++){
+            dp[0][i]=0;
+        }
+        for(int i=0;i<lngth.length+1;i++){
+            dp[i][0]=0;
+        }
+        System.out.println(findmax(lngth,val,rodlength,0,dp));
+    }
+
+//to findt the length of lowest common subsequence
+//by recursion
+//str1="abcde"
+//str2="ace"
+//ans"ace"
+//length=3
+class HelloWorld {
+    public static int findit(String s1,String s2,int n1,int m1){
+        //base case when string is empty
+        //ans should be 0
+        if(n1==-1||m1==-1){
+            return 0;
+        }
+        //if the last character of string is same 
+        //then it means we have to add1
+        if(s1.charAt(n1)==s2.charAt(m1)){
+            return 1+findit(s1,s2,n1-1,m1-1);
+        }
+        //when the last character is not same 
+        //then we will do two trype of recursion
+        //first we reduce the size of first string 
+        //then of second sting
+        else{
+            int ll=findit(s1,s2,n1,m1-1);
+            int rr=findit(s1,s2,n1-1,m1);
+            return Math.max(ll,rr);
+        }
+    }
+    public static void main(String[] args) {
+        String str1="abcde",str2="ace";
+        System.out.println(findit(str1,str2,str1.length()-1,str2.length()-1));
+    }
+}
+
+
+//by tabulation 
+//in tabulation its bottom up
+// so we will always look for the prev array only
+
+int[][] dp=new dp[n+1][m+1];
+
+for(int i=1;i<n+1;i++){
+for(int j=1;j<m+1;j++){
+//if the character are equal
+//we will check the prev character max length and add one
+if(s1.charAt(i-1)==s2.charAt(j-1){
+	dp[i][j]=1+dp[i-1][j-1];
+}
+//when the character are nit same
+else{
+	// we will check for the ans for prev array
+	// one for the s1 and one fr the s2
+	// and take max among them
+	int rr=dp[i][j-1];
+	int ll=dp[i-1][j];
+	dp[i][j]=Math.max(ll,rr);
+}
+
+}}
+//ans
+return dp[n][m];
+
+// longest common substring
+//its means a continuos common subsequence
+//s1="abcde"
+//s2="cdefgha"
+//ans =3  // "cde"
+
+//it is similar to longest common subsequnece
+//but when we both character are nit same 
+//we will assign value to zero
+//we will also use a ans which will collect the maximum value
+
+
+int[][] dp=new dp[n+1][m+1];
+
+// to save the max value
+int max=0;
+for(int i=1;i<n+1;i++){
+for(int j=1;j<m+1;j++){
+//if the character are equal
+//we will check the prev character max length and add one
+if(s1.charAt(i-1)==s2.charAt(j-1){
+	dp[i][j]=1+dp[i-1][j-1];
+	max=Math.max(dp[i][j],max);
+}
+//when the character are nit same
+else{
+	//if the continuos character is not same 
+	//then the new length of continuos substring should be
+	dp[i][j]=0; 
+}
+
+}}
+return ans;
+
+//longest increasing subsequnce
+//this means tell the longest increasing subset array in the same order
+//for this we will store all the array in a ascending order and with unique integer in new array
+//like longest common subsequnce we will compare both the array 
+// and we will get the answer
+    //BY MEMOIZATION
+     public static int findit(int[][] dp,int[] arr,int[] a1,int m1,int n1){
+        if(n1==0||m1==0){
+            return 0;
+        }
+        if(dp[m1][n1]!=0){
+            return dp[m1][n1];
+        }
+        if(a1[m1-1]==arr[n1-1]){
+            dp[m1][n1]=1+findit(dp,arr,a1,m1-1,n1-1);
+        }else{
+            int ll=findit(dp,arr,a1,m1-1,n1);
+            int rr=findit(dp,arr,a1,m1,n1-1);
+            dp[m1][n1]=Math.max(ll,rr);
+        }
+        return dp[m1][n1];
+    }
+    public static void main(Strig arg[])
+    {
+        
+         //code here
+        int[] a={50,3,10,11,7,40,80};
+        storing them in a unique way
+        if(size<=1){
+            return size;
+        }
+        TreeSet<Integer> ts=new TreeSet<>();
+        for(int i=0;i<a.length;i++){
+            ts.add(a[i]);
+        }
+        int [] a1=new int[ts.size()];
+        int i=0;
+        for(int ll:ts){
+            a1[i]=ll;
+            i++;
+        }
+        int[][] dp=new int[a1.length+1][a.length+1];
+        
+        //TABULATION
+       for( i=1;i<a1.length+1;i++){
+           for(int j=1;j<a.length+1;j++){
+               if(a[j-1]==a1[i-1]){
+                   dp[i][j]=1+dp[i-1][j-1];
+               }else{
+                   int ll=dp[i-1][j];
+                   int rr=dp[i][j-1];
+                   dp[i][j]=Math.max(ll,rr);
+               }
+           }
+       }
+       return dp[a1.length][a.length];
+        
+         
+    }
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

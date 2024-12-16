@@ -1,0 +1,267 @@
+// for making a new trie
+public class Trie {
+    static class Node{
+        boolean eow=false;
+        Node children[]=new Node[26];
+        Node(){
+            for(int i=0;i<26;i++){
+                children[i]=null;
+            }
+        }
+    }
+    public static Node root=new Node();
+    public static void insert(String word){
+        Node curr=root;
+        for(int i=0;i<word.length();i++){
+            char ch=word.charAt(i);
+            
+            if(curr.children[ch-'a']==null){
+                //creating new node as it is not available
+                curr.children[ch-'a']=new Node();
+            }
+                //if node is available so we cantraverse on the another word
+                curr=curr.children[ch-'a'];
+            
+            if(i==word.length()-1){
+                curr.eow=true;
+            }
+        }
+    }
+
+   public static void main(String[] args){
+         String words[]={"the","a","there","their","any","thee"};
+         for(int i=0;i<words.length;i++){
+            insert(words[i]);
+         }
+    }
+}
+
+  //for searching the trie
+
+   public static  boolean searchit(String word){
+    Node curr=root;
+    for(int i=0;i<word.length();i++){
+        char ch=word.charAt(i);
+        // for checking if we have the children for every child
+        if(curr.children[ch-'a']==null){
+            return false;
+        }
+        //for traversing in the trie
+        curr=curr.children[ch-'a'];
+    }
+    //for checking at the last word the eow is true or not
+    return curr.eow;
+   }
+
+//check if the word break problem
+//in this we have given a string we hav to check if the string can be made from the the trie or noe
+ public static boolean breakit(String word){
+    Node curr=root;
+    for(int i=0;i<word.length();i++){
+        char ch=word.charAt(i);
+
+        //for checking if the character is wrong
+        if(curr.children[ch-'a']==null&&curr.eow==false){
+            return false;
+        }
+
+        //for checking if the character is our last word
+        //then it will start from root only
+       else if(curr.children[ch-'a']==null&&curr.eow==true){
+            curr=root;
+            //if our root doesnt have our vharacter child
+            //then return false
+            if(curr.children[ch-'a']==null){
+                return false;
+            }
+        }
+        //updating the next child everytime
+        curr=curr.children[ch-'a'];
+        
+        
+    }
+    //return true if our end node is also end of word
+    return curr.eow==true;
+
+   }
+
+//for finding the idstinct prefix of the array strings
+public class Trie {
+    static class Node{
+        boolean eow=false;
+        Node children[]=new Node[26];
+        //for counting the occ
+        int occ=0;
+        Node(){
+            for(int i=0;i<26;i++){
+                children[i]=null;
+            }
+        }
+    }
+    public static Node root=new Node();
+
+    public static void insert(String word){
+        Node curr=root;
+        for(int i=0;i<word.length();i++){
+            char ch=word.charAt(i);
+            
+            if(curr.children[ch-'a']==null){
+                //creating new node as it is not available
+                curr.children[ch-'a']=new Node();
+            }
+                //if node is available so we cantraverse on the another word
+                curr.occ+=1;
+                curr=curr.children[ch-'a'];
+            
+            if(i==word.length()-1){
+                curr.eow=true;
+            }
+        }
+    }
+
+   
+   public static String getit(String key){
+    Node curr=root;
+    String ans="";
+    for(int i=0;i<key.length();i++){
+        char ch=key.charAt(i);
+        //checking for the occurence
+          if(curr.occ==1){
+          return ans;
+        }
+        ans+=ch;
+      
+        curr=curr.children[ch-'a'];
+
+
+    }
+    return ans;
+}
+    public static void main(String[] args){
+         String words[]={"zebra","dog","duck","dove"};
+         for(int i=0;i<words.length;i++){
+            insert(words[i]);
+         }
+
+         String [] anss=new String[words.length];
+         for(int i=0;i<anss.length;i++){
+          anss[i]=getit(words[i]);
+         }
+         for(int i=0;i<anss.length;i++){
+         System.out.println(anss[i]+"  ");}
+     
+    
+    }
+}
+// Check prefix in trie
+    //it is same as of search nut in this we will not check for true
+    //at our end of word
+    public static boolean startswithPrefix(String key){
+        Node curr=root;
+        for(int i=0;i<key.length();i++){
+            char ch=key.charAt(i);
+            if(curr.children[ch-'a']==null){
+                return false;
+            }
+            curr=curr.children[ch-'a'];
+        }
+        return true;
+    }
+// for getting the unique substrings
+//approach will be
+//1find all suffix of String
+//2 Create a Trie Insert the suffix strings
+//3 count nodes
+
+
+    //for counting the nodes
+    public static int countit(Node root){
+        if(root==null){
+            return 0;
+        }
+        int count=0;
+        for(int i=0;i<26;i++){
+
+            //if it has child then call that tree like in binary tree
+            if(root.children[i]!=null){
+                //adding the node in the count
+                count+=countit(root.children[i]);
+            }
+        }
+        //adding root node in count
+        return count+1;
+    }
+
+  
+    public static void main(String[] args){
+        //string
+        String s="ababa";
+        String words[]=new String[s.length()];
+        //creating array of all the suffix of string
+        for(int i=0;i<s.length();i++){
+            words[i]=s.substring(i, s.length());
+        }
+
+        //creating a trie of suffix 
+         for(int i=0;i<words.length;i++){
+            //System.out.print(words[i]+"  ");
+            insert(words[i]);
+         }
+         //for counting the nodes;
+         System.out.println(countit( root));
+        }
+}
+
+
+// for longest word with all prefix
+// to find the prefix in all words
+    public static String findit(String key){
+        Node curr=root;
+        String ans="";
+        for(int i=0;i<key.length();i++){
+            char ch=key.charAt(i);
+
+            // we will ad only till the eow is true
+            //that is that prefix all word is someone eow
+            if(curr.children[ch-'a']!=null&&curr.children[ch-'a'].eow==true){
+                ans+=ch;
+                curr=curr.children[ch-'a'];
+            }
+            //else break the loop and return the ans
+            else{
+                break;
+            }
+        }
+    
+        return ans;
+    }
+
+  
+    public static void main(String[] args){
+        
+        String words[]={"a","banana","app","apple","appl","ap","apply","apple"};
+        //creating array of all the suffix of string
+        for(int i=0;i<words.length;i++){
+            insert(words[i]);
+        }
+//String ans="";
+PriorityQueue<String> pq=new PriorityQueue<>();
+
+//for getting the prefix 
+       for(int i=0;i<words.length;i++){
+        pq.add(findit(words[i]));
+    }
+        int sizee=0;
+        String s1="";
+        //comparing all the prefixxx
+        while(!pq.isEmpty()){
+            String s2=pq.poll();
+            if(s2.length()>sizee){
+                sizee=s2.length();
+                s1=s2;
+            }
+        }
+        System.out.println(s1);
+        
+
+}

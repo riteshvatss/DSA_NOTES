@@ -1,0 +1,797 @@
+Given a Binary Search Tree, modify the given BST such that it is balanced and has minimum possible height. Return the balanced BST.
+
+Example1:
+
+Input:
+       30
+      /
+     20
+    /
+   10
+Output:
+     20
+   /   \
+ 10     30
+
+class GfG
+{
+    //for the sorted terms of the array
+    void inorder(Node root,ArrayList<Integer> al){
+        if(root==null){
+            return ;
+        }
+        inorder(root.left,al);
+        al.add(root.data);
+        inorder(root.right,al);
+        
+    }
+    
+    //fill the sorted array by middle by middle
+    Node makeIt(int st,int end,ArrayList<Integer> al){
+        if(st>end){
+            return null;
+        }
+        int mid=(st+end)/2;
+        Node newNode=new Node(al.get(mid));
+        newNode.left=makeIt(st,mid-1,al);
+        newNode.right=makeIt(mid+1,end,al);
+        return newNode;
+        
+        
+        
+    }
+    Node buildBalancedTree(Node root) 
+    {
+        //Add your code here.
+        ArrayList<Integer> al=new ArrayList<>();
+        inorder(root,al);
+        
+        Node root1=makeIt(0,al.size()-1,al);
+        return root1;
+    }
+}
+
+Given the root of a binary tree. Check whether it is a BST or not.
+Note: We are considering that BSTs can not contain duplicate Nodes.
+A BST is defined as follows:
+
+The left subtree of a node contains only nodes with keys less than the node's key.
+The right subtree of a node contains only nodes with keys greater than the node's key.
+Both the left and right subtrees must also be binary search trees.
+ 
+
+Example 1:
+
+Input:
+   2
+ /    \
+1      3
+Output: 1 
+Explanation: 
+The left subtree of root node contains node
+with key lesser than the root nodes key and 
+the right subtree of root node contains node 
+with key greater than the root nodes key.
+Hence, the tree is a BST.
+
+class Solution
+{
+    //Function to check whether a Binary Tree is BST or not.
+    boolean checkIt(Node root,Node min,Node max){
+        if(root==null){
+            return true;
+        }else if(min!=null&&root.data<=min.data){
+            return false;
+        }else if(max!=null&&root.data>=max.data){
+            return false;
+        }
+        return checkIt(root.left,min,root)&&checkIt(root.right,root,max);
+    }
+    
+    boolean isBST(Node root)
+    {
+        // code here.
+     return checkIt(root,null,null);
+    }
+}
+
+Given a binary search tree and a number N, find the greatest number in the binary search tree that is less than or equal to N. 
+class Tree
+{
+    static  void inorder(Node root,ArrayList<Integer> al){
+        if(root==null){
+            return;
+        }
+        inorder(root.left,al);
+        al.add(root.key);
+        inorder(root.right,al);
+    }
+    public static int findMaxForN(Node root, int val)
+    {
+    //Add your code here.
+    ArrayList<Integer> al=new ArrayList<>();
+    inorder(root,al);
+    int num=0;
+    for(int i=0;i<al.size();i++){
+        if(al.get(i)<=val){
+            num=al.get(i);
+        }else{
+            break;
+        }
+    }
+    return num;
+    }
+}
+
+Given a Binary Search Tree that contains positive integer values greater than 0. The task is to complete the function isDeadEnd which returns true if the BST contains a dead end else returns false. Here Dead End means, we are not able to insert any element after that node.
+
+Example 1:
+
+Input :   
+               8
+             /   \ 
+           5      9
+         /  \     
+        2    7 
+       /
+      1     
+          
+Output : 
+Yes
+Explanation : 
+Node "1" is the dead End because after that 
+              we cant insert any element.
+
+class GFG
+{
+    static boolean checkit(Node root,int min,int max){
+        if(root==null){
+            return false;
+        }
+        
+      
+          if(root.data-1==min&&root.data+1==max){
+            return true;
+        }
+        return checkit(root.left,min,root.data)||checkit(root.right,root.data,max);
+        
+    }
+    public static boolean isDeadEnd(Node root)
+    {
+        //Add your code here.
+            return checkit(root,0,Integer.MAX_VALUE);
+         }
+}
+
+Given a sorted array. Convert it into a Height balanced Binary Search Tree (BST). Find the preorder traversal of height balanced BST. If there exist many such balanced BST consider the tree whose preorder is lexicographically smallest.
+Height balanced BST means a binary tree in which the depth of the left subtree and the right subtree of every node never differ by more than 1.
+
+Example 1:
+
+Input: nums = {1, 2, 3, 4}
+Output: {2, 1, 3, 4}
+Explanation: 
+The preorder traversal of the following 
+BST formed is {2, 1, 3, 4}:
+           2
+         /   \
+           1     3
+               \
+                4
+
+class Solution
+{
+    class Node{
+        Node left,right;
+        int data;
+        Node(int data){
+            this.data=data;
+            left=null;
+            right=null;
+        }
+    }
+    
+    Node makeIt(int st,int end,int[] num){
+        if(st>end){
+            return null;
+        }
+        int mid=(st+end)/2;
+        Node newNode=new Node(num[mid]);
+        newNode.left=makeIt(st,mid-1,num);
+        newNode.right=makeIt(mid+1,end,num);
+        return newNode;
+
+    }
+    void preorder(Node root,ArrayList<Integer> al){
+        if(root==null){
+            return;
+        }
+        al.add(root.data);
+        preorder(root.left,al);
+        preorder(root.right,al);
+        
+    }
+    public int[] sortedArrayToBST(int[] nums)
+    {
+        // Code here 
+        //makeIt(nums,nums.length-1)
+       Node root=makeIt(0,nums.length-1,nums);
+        ArrayList<Integer> al=new ArrayList<>();
+        preorder(root,al);
+        
+        int[] arr=new int[al.size()];
+        
+        for(int i=0;i<al.size();i++){
+            arr[i]=al.get(i);
+        }
+        return arr;
+        
+    }
+}
+
+Given a Binary Search Tree (with all values unique) and two node values n1 and n2 (n1!=n2). Find the Lowest Common Ancestors of the two nodes in the BST.
+
+Example 1:
+
+Input:
+              5
+            /   \
+          4      6
+         /        \
+        3          7
+                    \
+                     8
+n1 = 7, n2 = 8
+Output: 7
+class BST
+{   
+    //Function to find the lowest common ancestor in a BST.
+    boolean findPath(Node root,ArrayList<Node> al,int n){
+        if(root==null){
+            return false;
+        }
+        al.add(root);
+        if(root.data==n){
+            return true;
+        }
+    boolean lf=    findPath(root.left,al,n);
+        boolean rf=findPath(root.right,al,n);
+        if(lf||rf){
+            return true;
+        }
+        al.remove(al.size()-1);
+        return false;
+    }
+	Node LCA(Node root, int n1, int n2)
+	{
+        // code here.  
+        ArrayList<Node> al2=new ArrayList<>();
+        ArrayList<Node> al1=new ArrayList<>();
+        findPath(root,al1, n1);
+        findPath(root,al2, n2);
+        
+        int i=0;
+        for(;i<al1.size()&&i<al2.size();i++){
+            if(al1.get(i).data!=al2.get(i).data){
+                break;
+            }
+        }
+        return al2.get(i-1);
+    }
+    
+}
+
+Given a Binary Search Tree. Your task is to complete the function which will return the Kth largest element without doing any modification in Binary Search Tree.
+
+Example 1:
+
+Input:
+      4
+    /   \
+   2     9
+k = 2 
+Output: 4
+*/
+class Solution
+{
+    // return the Kth largest element in the given BST rooted at 'root'
+    void inorder(Node root,ArrayList<Integer> al){
+        if(root==null){
+            return;
+        }
+        inorder(root.left,al);
+        al.add(root.data);
+        inorder(root.right,al);
+    }
+    
+Given a Binary Tree, convert it to Binary Search Tree in such a way that keeps the original structure of Binary Tree intact.
+ Example 1:
+
+Input:
+      1
+    /   \
+   2     3
+Output: 
+1 2 3
+
+class Solution
+{
+    // The given root is the root of the Binary Tree
+    // Return the root of the generated BST
+   void inorder(Node root,ArrayList<Integer> al){
+        if(root==null){
+            return;
+        }
+        inorder(root.left,al);
+        al.add(root.data);
+        inorder(root.right,al);
+    }
+    Node makeIt(Node root,int val){
+        if(root==null){
+            root=new Node(val);
+            return root;
+        }
+        if(root.data<val){
+            root.right=makeIt(root.right,val);
+        }else{
+            root.left=makeIt(root.left,val);
+        }
+        return root;
+    }
+    
+    Node binaryTreeToBST(Node root)
+    {
+       // Your code here
+       ArrayList<Integer> al=new ArrayList<>();
+       inorder(root,al);
+       Node root1=null;
+       for(int i=0;i<al.size();i++){
+           root1=makeIt(root1,al.get(i));
+       }
+       return root1;
+    }
+}
+
+Given a Binary Search Tree (BST) and a range l-h(inclusive), count the number of nodes in the BST that lie in the given range.
+
+The values smaller than root go to the left side
+The values greater and equal to the root go to the right side
+Example 1:
+
+Input:
+      10
+     /  \
+    5    50
+   /    /  \
+  1    40  100
+l = 5, h = 45
+Output: 3
+Explanation: 5 10 40 are the node in the
+range
+class Solution
+{
+    //Function to count number of nodes in BST that lie in the given range.
+    int getCount(Node root,int l, int h)
+    {
+        //Your code here
+        if(root==null){
+            return 0;
+        }
+        if(root.data>=l&&root.data<=h){
+            int lh=getCount(root.left,l,h);
+            int rh=getCount(root.right,l,h);
+            return lh+rh+1;
+        }
+        else if(root.data<l){
+            return  getCount(root.right,l,h);
+        }else{
+            return getCount(root.left,l,h);
+        }
+        //return ;
+        
+    }
+}
+
+Given a binary tree. Find the size of its largest subtree that is a Binary Search Tree.
+Note: Here Size is equal to the number of nodes in the subtree.
+
+Example 1:
+
+Input:
+        1
+      /   \
+     4     4
+   /   \
+  6     8
+Output: 1
+Explanation: There's no sub-tree with size
+greater than 1 which forms a BST. All the
+leaf Nodes are the BSTs with size equal
+to 1.
+
+class Solution{
+    
+    // Return the size of the largest sub-tree which is also a BST
+static class info{
+        int size;
+        boolean isValid;
+        int max;
+        int min;
+      //  int maxBst;
+      
+        info(boolean isValid,int size,int min,int max){
+            this.isValid=isValid;
+            this.min=min;
+            this.max=max;
+            this.size=size;
+        }}
+        
+       // static int maxBst=0;
+
+        static info checkIt(Node root,ArrayList<Integer> al){
+            
+       if(root==null){
+                return new info(true,0,Integer.MAX_VALUE,Integer.MIN_VALUE);
+                          }
+             info lf=checkIt(root.left,al);
+            info rf=checkIt(root.right,al);
+            
+            int minn=Math.min(lf.min,Math.min(root.data,rf.min));
+            int maxx=Math.max(lf.max, Math.max(root.data,rf.max));
+            
+            int sizee=lf.size+rf.size+1;
+            if(root.data<=lf.max||root.data>=rf.min){
+               // al.remove(al.size()-1);
+               
+                return new info(false, sizee, minn, maxx);
+            }
+            if(lf.isValid&&rf.isValid){
+                al.add(sizee);
+                
+               return new info(true, sizee, minn, maxx);
+            }
+            //al.remove(al.size()-1);
+           // sizee-=1;
+            return new info(false, sizee, minn, maxx);
+           
+
+
+        }
+
+
+    static int largestBst(Node root)
+    {
+        // Write your code here
+        ArrayList<Integer> al=new ArrayList<>();
+       // al.add(0);
+    
+        info hh=checkIt(root,al);
+        int max=0;
+        for(int i=0;i<al.size();i++){
+            if(max<al.get(i)){
+                max=al.get(i);
+            }
+        }
+        return max;
+        
+        
+        
+    }
+    
+}
+
+Given a BST and an integer K. Find the Kth Smallest element in the BST using O(1) extra space. 
+
+Example 1:
+
+Input:
+      2
+    /   \
+   1     3
+K = 2
+Output: 2
+Explanation: 2 is the 2nd smallest element in the BST
+class Solution {
+    // Return the Kth smallest element in the given BST
+        void inorder(Node root,ArrayList<Integer> al){
+        if(root==null){
+            return;
+        }
+        inorder(root.left,al);
+        al.add(root.data);
+        inorder(root.right,al);
+    }
+    public int KthSmallestElement(Node root, int K) {
+        // Write your code here
+         ArrayList<Integer> al=new ArrayList<>();
+        inorder(root ,al);
+        if(K>al.size()){
+            return -1;
+        }
+        return al.get(K-1);
+    }
+}
+
+Given two BSTs, return elements of both BSTs in sorted form.
+
+
+Example 1:
+
+Input:
+BST1:
+       5
+     /   \
+    3     6
+   / \
+  2   4  
+BST2:
+        2
+      /   \
+     1     3
+            \
+             7
+            /
+           6
+Output: 1 2 2 3 3 4 5 6 6 7
+Explanation: 
+After merging and sorting the
+two BST we get 1 2 2 3 3 4 5 6 6 7.
+class Solution
+{
+    //Function to return a list of integers denoting the node 
+    //values of both the BST in a sorted order.
+   void inorder(Node root,PriorityQueue<Integer> al){
+        if(root==null){
+            return ;
+        }
+        inorder(root.left,al);
+        al.add(root.data);
+        inorder(root.right,al);
+        
+    }
+       void inorderr(Node root,ArrayList<Integer> al){
+        if(root==null){
+            return ;
+        }
+        inorderr(root.left,al);
+        al.add(root.data);
+        inorderr(root.right,al);
+        
+    }
+    Node makeit(int st,int end,int[] arr){
+        if(st>end){
+            return null;
+        }
+        int mid=(st+end)/2;
+        Node newNode=new Node(arr[mid]);
+        newNode.left=makeit(st,mid-1,arr);
+        newNode.right=makeit(mid+1,end,arr);
+        return newNode;
+        
+    }
+    public List<Integer> merge(Node root1,Node root2)
+    {
+        // Write your code here
+        PriorityQueue<Integer> pq=new PriorityQueue<>();
+        inorder(root1,pq);
+        inorder(root2,pq);
+        //int i=0;
+      int i=0;
+      int[] arr=new int[pq.size()];
+      
+      while(!pq.isEmpty()){
+          arr[i]=pq.poll();
+          i++;
+      }
+
+        Node root3=makeit(0,arr.length-1,arr);
+        
+        ArrayList<Integer> al2=new ArrayList<>();
+
+        
+        inorderr(root3,al2);
+
+        
+        return al2;
+        
+        
+    }
+}
+
+Given a binary tree in which each node element contains a number. Find the maximum possible path sum from one special node to another special node.
+
+Note: Here special node is a node which is connected to exactly one different node.
+
+
+Example 1:
+
+Input:      
+           3                               
+         /    \                          
+       4       5                     
+      /  \      
+    -10   4                          
+Output: 16
+Explanation:
+Maximum Sum lies between special node 4 and 5.
+4 + 4 + 3 + 5 = 16.
+
+class Solution
+{
+    int findIt(Node root,int ans,ArrayList<Integer> al){
+        if(root==null){
+            return 0;
+        }
+        if(root.left==null&&root.right==null){
+            return root.data;
+            
+        }
+         if(root.left==null){
+            return (findIt(root.right,ans,al)+root.data);}
+     if(root.right==null){
+            return (findIt(root.left,ans,al)+root.data);
+        }
+        int l=findIt(root.left,ans,al);
+        int r=findIt(root.right,ans,al);
+        
+        ans=Math.max(ans,l+r+root.data);
+        al.add(ans);
+        return (Math.max(l,r)+root.data);
+    }
+    int maxPathSum(Node root)
+    { 
+        // code here
+        ArrayList<Integer> al=new ArrayList<>();
+        int ans=Integer.MIN_VALUE;
+        int t=findIt(root,ans,al);
+        int max=Integer.MIN_VALUE;
+        for(int i=0;i<al.size();i++){
+            if(max<al.get(i)){
+                max=al.get(i);
+            }        
+            
+        }
+        if(root.left==null||root.right==null){
+            max=Math.max(t,max);
+        }
+        
+        return max;
+    }
+}
+
+Given a binary tree, a target node in the binary tree, and an integer value k, find all the nodes that are at distance k from the given target node. No parent pointers are available.
+Note:
+
+You have to return the list in sorted order.
+The tree will not contain duplicate values.
+Example 1:
+
+Input:      
+          20
+        /    \
+      8       22 
+    /   \
+   4    12 
+       /   \
+      10    14
+Target Node = 8
+K = 2
+Output: 10 14 22
+Explanation: The three nodes at distance 2
+from node 8 are 10, 14, 22.
+
+
+class Solution
+{
+ //for the subtree of the node
+    static void subtr(Node  root,int k,ArrayList<Integer> al){
+        if(root==null){
+            return;
+        }
+        if(k==0){
+            al.add(root.data);
+        }
+        subtr(root.left,k-1,al);
+        subtr(root.right,k-1,al);
+    
+    }
+    
+    static int findD(Node root,int target,int k,ArrayList<Integer> al){
+        if(root==null){
+            return -1;
+        }
+        
+        if(root.data==target){
+            subtr(root,k,al);
+            return 0;
+        }
+        
+        int dl=findD(root.left,target,k,al);
+        
+        if(dl!=-1){
+            if(dl+1==k){
+                al.add(root.data);
+            }
+            else{
+                subtr(root.right,k-dl-2,al);
+            }
+            return 1+dl;
+        }
+        int dr=findD(root.right,target,k,al);
+        if(dr!=-1){
+            if(dr+1==k){
+                al.add(root.data);
+            }
+            else{
+                subtr(root.left,k-dr-2,al);
+            }
+            return 1+dr;
+            
+        }
+        return -1;
+    }
+    
+    public static ArrayList<Integer> KDistanceNodes(Node root, int target , int k)
+    {
+        // return the sorted list of all nodes at k dist
+       ArrayList<Integer> al=new ArrayList<>();
+        findD(root,target,k,al);
+        Collections.sort(al);
+        
+        return al;
+    }
+}
+There is BST given with the root node with the key part as an integer only. You need to find the in-order successor and predecessor of a given key. If either predecessor or successor is not found, then set it to NULL.
+
+Note:- In an inorder traversal the number just smaller than the target is the predecessor and the number just greater than the target is the successor. 
+
+Example 1:
+
+Input:
+        10
+      /   \
+     2    11
+   /  \ 
+  1    5
+      /  \
+     3    6
+      \
+       4
+key = 8
+Output: 
+6 10
+Explanation: 
+In the given BST the inorder predecessor of 8 is 6 and inorder successor of 8 is 10.
+
+
+static void inorder(Node root,ArrayList<Node> al){
+    if(root==null){
+        return;
+    }
+    inorder(root.left,al);
+    al.add(root);
+    inorder(root.right,al);
+}
+public static void findPreSuc(Node root, int key)
+{
+    // code here.
+    
+    
+    /* There are two static nodes defined above pre(representing predecessor) and suc(representing successor) as follows:
+       static Node pre=null,suc=null
+       You need to update these both.
+       And the data inside these classes will be printed automatically by the driver code. 
+    */
+    ArrayList<Node> al=new ArrayList<>();
+    inorder(root,al);
+    for(int i=0;i<al.size();i++){
+        if(al.get(i).data<key){
+            pre=al.get(i);
+        }else if(al.get(i).data>key){
+            suc=al.get(i);
+            break;
+        }
+    }
+    
+}
+}

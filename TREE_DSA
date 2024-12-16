@@ -1,0 +1,1395 @@
+Given a binary tree, find its level order traversal.
+Level order traversal of a tree is breadth-first traversal for the tree.
+
+
+Example 1:
+
+Input:
+    1
+  /   \ 
+ 3     2
+Output:1 3 2
+class Solution
+{
+    //Function to return the level order traversal of a tree.
+    static ArrayList <Integer> levelOrder(Node node) 
+    {
+        // Your code here
+        Queue<Node> q=new LinkedList<>();
+        q.add(node);
+        q.add(null);
+        ArrayList<Integer> al=new ArrayList<>();
+        while(!q.isEmpty()){
+            Node curr=q.remove();
+            if(curr==null){
+                if(q.isEmpty()){
+                    break;
+                }else{
+                    q.add(null);
+                }
+            }
+            else{
+                al.add(curr.data);
+                //System.out.print(curr.data+" ");
+                if(curr.left!=null){
+                    q.add(curr.left);
+                }if(curr.right!=null){
+                    q.add(curr.right);
+                }
+            }
+        }
+        return al;
+    }
+}
+
+Given a binary tree of size N, find its reverse level order traversal. ie- the traversal must begin from the last level.
+
+Example 1:
+
+Input :
+        1
+      /   \
+     3     2
+
+Output: 3 2 1
+Explanation:
+Traversing level 1 : 3 2
+Traversing level 0 : 1
+lass Tree
+{
+    public ArrayList<Integer> reverseLevelOrder(Node node) 
+    {
+        // code here
+        Queue<Node> q=new LinkedList<>();
+        Stack<Node> s=new Stack<>();
+        //s.push(node);
+        q.add(node);
+        q.add(null);
+        
+        ArrayList<Integer> al=new ArrayList<>();
+        while(!q.isEmpty()){
+            Node curr=q.remove();
+            if(curr==null){
+                if(q.isEmpty()){
+                    break;
+                }else{
+                    q.add(null);
+                }
+            }
+            else{
+               s.push(curr);
+            
+            //here we have to interchange the left position comes first
+            
+               if(curr.right!=null){
+                   q.add(curr.right);
+               }
+                  if(curr.left!=null){
+                   q.add(curr.left);
+               }
+            }
+        }
+        while(!s.isEmpty()){
+            al.add(s.pop().data);
+        }
+        return al;
+    }
+}      
+
+Given a binary tree, find its height.
+
+Example 1:
+
+Input:
+     1
+    /  \
+   2    3
+Output: 2
+
+class Solution {
+    //Function to find the height of a binary tree.
+    int height(Node node) 
+    {
+        // code here 
+        if(node==null){
+            return 0;
+        }
+        int lh=height(node.left);
+        int rh=height(node.right);
+        return Math.max(lh,rh)+1;
+    }
+}
+
+Given a Binary Tree, find Right view of it. Right view of a Binary Tree is set of nodes visible when tree is viewed from right side.
+
+Right view of following tree is 1 3 7 8.
+
+          1
+       /     \
+     2        3
+   /   \      /    \
+  4     5   6       7
+    \
+     8
+
+Example 1:
+
+Input:
+       1
+    /    \
+   3      2
+Output: 1 2
+
+class Solution{
+    //Function to return list containing elements of right view of binary tree.
+    static class info{
+        int pos;
+        Node node;
+        info(int pos, Node node){
+            this.pos=pos;
+            this.node=node;
+        }
+    }
+    ArrayList<Integer> rightView(Node node) {
+        //add code here.
+        Node root=node;
+        HashMap<Integer,Node> hm=new HashMap<>();
+      Queue<info> q=new LinkedList<>();
+      q.add(new info(0,root));
+      q.add(null);
+      int key=0;
+      hm.put(key,root);
+      ArrayList<Integer> al=new ArrayList<>();
+      while(!q.isEmpty()){
+          info curr=q.remove();
+          if(curr==null){
+              if(q.isEmpty()){
+                  break;
+              }
+              else{
+                  q.add(null);
+              }
+          }else{
+              if(!hm.containsKey(curr.pos)){
+                  hm.put(curr.pos,curr.node);
+              }
+
+              if(curr.node.right!=null){
+                  q.add(new info(curr.pos+1,curr.node.right));
+              }
+                            if(curr.node.left!=null){
+                  q.add(new info(curr.pos+1,curr.node.left));
+              }
+             // key=key+1;
+          }
+      }
+      Set<Integer> keys=hm.keySet();
+      for(int num:keys){
+          al.add((hm.get(num)).data);
+      }
+      return al;
+    }
+}
+
+
+Given a binary tree, find if it is height balanced or not. 
+A tree is height balanced if difference between heights of left and right subtrees is not more than one for all nodes of tree. 
+
+A height balanced tree
+        1
+     /     \
+   10      39
+  /
+5
+
+An unbalanced tree
+        1
+     /    
+   10   
+  /
+5
+
+Example 1:
+
+Input:
+      1
+    /
+   2
+    \
+     3 
+Output: 0
+Explanation: The max difference in height
+of left subtree and right subtree is 2,
+which is greater than 1. Hence unbalanced
+
+class Tree
+{
+    
+    //Function to check whether a binary tree is balanced or not.
+  //helper function height
+     int height(Node root){
+        if(root==null){
+            return 0;
+        } 
+        int l=height(root.left);
+        int r=height(root.right);
+        int h=Math.max(l,r)+1;
+         return h;
+     }
+     
+    boolean isBalanced(Node root)
+    {
+	// Your code here
+	if(root==null){
+	    return true;
+	}
+	
+	//check for the balanced tree with in itself
+	boolean ll=isBalanced(root.left);
+	boolean rr=isBalanced(root.right);
+	
+	//for getting the values of hight of left and right
+	
+	int lh=height(root.left);
+	int rh=height(root.right);
+	
+	//comparing the values of left and right
+	int diff=Math.abs(lh-rh);
+	//comparing all the data
+	if((ll==true&&rr==true)&&(diff<=1)){
+	    return true;
+	}
+
+	
+	return false;
+
+    }
+}
+
+Given a Binary Tree, check if all leaves are at same level or not.
+
+Example 1:
+
+Input: 
+            1
+          /   \
+         2     3
+
+Output: 1
+
+Explanation: 
+Leaves 2 and 3 are at same level.
+class Solution
+{
+    //for getting
+   int height(Node root){
+       if(root==null){
+           return 0;
+       }
+      int l= height(root.left);
+      int r=height(root.right);
+      return Math.max(l,r)+1;
+       
+   }
+   
+   void countit(Node root,int level,int k, ArrayList<Integer> count,ArrayList<Integer> leaff){
+       if(root==null){
+           return ;
+       }
+       
+       if(root.left==null&&root.right==null){
+           leaff.add(1);
+       }
+       if(level==k){
+           //count+=1;
+           //System.out.println(root.data);
+           count.add(root.data);
+           return ;
+           
+       }
+       
+       countit(root.left,level+1,k,count,leaff);
+       countit(root.right,level+1,k,count,leaff);
+       
+       //return cou ;
+       
+       
+   }
+    //main funcyion
+    boolean check(Node root)
+    {
+	// Your code here
+	ArrayList<Integer> count=new ArrayList<>();
+	ArrayList<Integer> leaff=new ArrayList<>();
+	int ll=height(root);
+	 countit(root,1,ll,count,leaff);
+
+if(leaff.size()==count.size()){
+    return true;
+}else{
+   return false;
+}
+
+	
+    }
+}
+
+
+Given a Binary Tree, return Left view of it. Left view of a Binary Tree is set of nodes visible when tree is visited from Left side. The task is to complete the function leftView(), which accepts root of the tree as argument.
+
+Left view of following tree is 1 2 4 8.
+
+          1
+       /     \
+     2        3
+   /     \    /    \
+  4       5   6     7
+   \
+     8   
+
+class Tree
+{
+    //Function to return list containing elements of left view of binary tree.
+    static class info{
+        int pos;
+        Node node;
+        info(int pos, Node node){
+            this.pos=pos;
+            this.node=node;
+        }
+    }
+    ArrayList<Integer> leftView(Node root)
+    {
+      // Your code here
+            ArrayList<Integer> al=new ArrayList<>();
+      if(root==null){
+          return al;
+      }
+      HashMap<Integer,Node> hm=new HashMap<>();
+      Queue<info> q=new LinkedList<>();
+      q.add(new info(0,root));
+      q.add(new info(0,null));
+      int key=0;
+      hm.put(key,root);
+
+      while(!q.isEmpty()){
+          info curr=q.remove();
+          if(curr.node==null){
+              if(q.isEmpty()){
+                  break;
+              }
+              else{
+                  q.add(new info(curr.pos,null));
+              }
+          }else{
+              if(!hm.containsKey(curr.pos)){
+                  hm.put(curr.pos,curr.node);
+              }
+              if(curr.node.left!=null){
+                  q.add(new info(curr.pos+1,curr.node.left));
+              }
+              if(curr.node.right!=null){
+                  q.add(new info(curr.pos+1,curr.node.right));
+              }
+             // key=key+1;
+          }
+      }
+      Set<Integer> keys=hm.keySet();
+      for(int num:keys){
+          al.add((hm.get(num)).data);
+      }
+      return al;
+    }
+}
+
+Given a Binary Tree. Find the difference between the sum of node values at even levels and the sum of node values at the odd levels.
+
+Example 1:
+
+Input:
+            1
+          /   \
+         2     3
+
+Output: -4
+
+Explanation:
+sum at odd levels - sum at even levels
+= (1)-(2+3) = 1-5 = -4
+class Solution
+{
+	int getLevelDiff(Node root)
+	{
+	    //code here
+	    Queue<Node> q=new LinkedList<>();
+	    q.add(root);
+	    q.add(null);
+	    int k=1;
+	    ArrayList<Integer> al1=new ArrayList<>();
+	    ArrayList<Integer> al2=new ArrayList<>();
+	    while(!q.isEmpty()){
+	        Node curr=q.remove();
+	        if(curr==null){
+	            if(q.isEmpty()){
+	                break;
+	            }else{
+	                q.add(null);
+	            }
+	            k+=1;
+	        }
+	        else{
+	            
+	            // for getting the same odd or even level node values in 
+	            //same arraylist
+	            if(k%2==0){
+	                al2.add(curr.data);
+	            }else{
+	                al1.add(curr.data);
+	            }
+	            if(curr.left!=null){
+	                q.add(curr.left);
+	            }if(curr.right!=null){
+	                q.add(curr.right);
+	            }
+	        }
+	    }
+	    
+	    int sum1=0,sum2=0;
+	    
+	    //now adding the same level value
+	    for(int i=0;i<al1.size();i++){
+	        sum1+=al1.get(i);
+	    }
+	    for(int i=0;i<al2.size();i++){
+	        sum2+=al2.get(i);
+	    }
+	    return sum1-sum2;
+	    
+	}
+}
+
+Make a mirrir of the tree
+Input:
+      1
+    /  \
+   2    3
+Output: 3 1 2
+Explanation: The tree is
+   1    (mirror)  1
+ /  \    =>      /  \
+2    3          3    2
+The inorder of mirror is 3 1 2
+
+class Solution {
+        public  Node mirrorIt(Node root){
+        if(root==null){
+            return null;
+        }
+        Node lf=mirrorIt(root.left);
+        Node rf=mirrorIt(root.right);
+        root.left=rf;
+        root.right=lf;
+        return root;
+    }
+
+    // Function to convert a binary tree into its mirror tree.
+    void mirror(Node node) {
+        // Your code here
+        mirrorIt(node);
+    }
+}
+
+Given a Binary Tree having positive and negative nodes. Find the maximum sum of a level in the given Binary Tree.
+
+Example 1:
+
+Input :               
+             4
+          /    \
+         2     -5
+        / \    / \
+      -1   3  -2  6
+
+Output: 6
+
+Explanation :
+Sum of all nodes of 0'th level is 4
+Sum of all nodes of 1'th level is -3
+Sum of all nodes of 2'th level is 6
+Hence maximum sum is 6
+
+class Solution {
+    public int maxLevelSum(Node root) {
+        // add code here.
+        int sum=0,maxsum=Integer.MIN_VALUE;
+        Queue<Node> q=new LinkedList<>();
+        q.add(root);
+        q.add(null);
+        while(!q.isEmpty()){
+            Node curr=q.remove();
+            if(curr==null){
+                  if(maxsum<=sum){
+                  maxsum=sum;
+            }
+            sum=0;
+                if(q.isEmpty()){
+                    break;
+            }else{
+                q.add(null);
+            }
+          
+        }
+        else{
+            sum+=curr.data;
+            if(curr.left!=null){
+                q.add(curr.left);
+            }if(curr.right!=null){
+                q.add(curr.right);
+            }
+        }
+        }
+        return maxsum;
+    }
+}
+
+
+Given a Binary Tree, find the maximum width of it. Maximum width is defined as the maximum number of nodes at any level.
+For example, the maximum width of the following tree is 4 as there are 4 nodes at the 3rd level.
+
+          1
+       /     \
+     2        3
+   /    \    /    \
+  4    5   6    7
+    \
+      8
+
+Example 1:
+
+Input:
+       1
+     /    \
+    2      3
+Output: 2
+On the first level there is only
+one node 1
+On the second level there are
+two nodes 2, 3 clearly it is the 
+maximum number of nodes at any level
+
+class Solution {
+    // Function to get the maximum width of a binary tree.
+    int getMaxWidth(Node root) {
+        // Your code here
+       Queue<Node> q=new LinkedList<>();
+       q.add(root);
+       q.add(null);
+    
+       int count=0,maxcount=0;
+          if(root==null){
+           maxcount=0;
+       }else{
+           maxcount=1;
+       }
+       while(!q.isEmpty()){
+           Node curr=q.remove();
+           if(curr==null){
+               if(q.isEmpty()){
+                   break;
+               }
+               else{
+                   
+                   //for counting the nodes at each level
+                   if(maxcount<=count){
+                       maxcount=count;
+                   }
+                   count=0;
+                   q.add(null);
+               }
+           }
+           else{
+               if(curr.left!=null){
+                   count+=1;
+                   q.add(curr.left);
+               }
+               if(curr.right!=null){
+                   count+=1;
+                   q.add(curr.right);
+               }
+           }
+       }
+       return maxcount;
+    }
+}
+
+Given two binary trees, the task is to find if both of them are identical or not. 
+
+
+Example 1:
+
+Input:
+     1          1
+   /   \      /   \
+  2     3    2     3
+Output: Yes
+Explanation: There are two trees both
+having 3 nodes and 2 edges, both trees
+are identical having the root as 1,
+left child of 1 is 2 and right child
+of 1 is 3.
+class Solution
+{
+    //Function to check if two trees are identical.
+	boolean isIdentical(Node root1, Node root2)
+	{
+	    // Code Here
+	    
+	    //here when 
+	    if(root1==root2){
+	        return true;
+	    }else if(root1==null||root2==null||root1.data!=root2.data){
+	        return false;
+	    }
+	    boolean lf=isIdentical(root1.left,root2.left);
+	    boolean rf=isIdentical(root1.right,root2.right);
+	    if(lf&&rf){
+	    return true;}
+	    else{
+	        return false;
+	    }
+	}
+	
+}
+
+
+Given a Binary Tree. Find the Zig-Zag Level Order Traversal of the Binary Tree.
+
+ 
+
+Example 1:
+
+Input:
+        1
+      /   \
+     2     3
+    / \   /  \
+   4   5 6    7
+Output:
+1 3 2 4 5 6 7
+class GFG
+{
+    //Function to store the zig zag order traversal of tree in a list.4
+
+    
+	ArrayList<Integer> zigZagTraversal(Node root)
+	{
+	     
+	    //Add your code here.
+	    ArrayList<Integer> al=new ArrayList<Integer>();
+	    Queue<Node> q=new LinkedList<>();
+	    q.add(root);
+	    q.add(null);
+	    Stack<Integer> s=new Stack<>();
+	    int k=1;
+	    while(!q.isEmpty()){
+	       Node curr=q.remove();
+	       if(curr==null){
+	           if(q.isEmpty()){
+	               break;
+	           }else{
+	               q.add(null);
+	           }
+	           k+=1;
+	       }else{
+	           
+	           // so that we can get the nodes in reverse order
+	           if(k%2!=0){
+	               while(!s.isEmpty()){
+	                   al.add(s.pop());
+	               }
+	                   al.add(curr.data);    
+	           }else{
+	               s.push(curr.data);
+	           }
+	           
+	           // we cant change them for reverse order
+	           //because by chnaging we are chaning the left and right
+	           //of the original tree
+	       
+	        if(curr.left!=null){
+	            q.add(curr.left);
+	        }
+	        if(curr.right!=null){
+	            q.add(curr.right);
+	        }
+	      
+	       
+	       }
+	    }
+	    while(!s.isEmpty()){
+	        al.add(s.pop());
+	    }
+	   
+        
+	   return al;
+	    
+	    
+	}
+}
+
+Given a binary tree, find out whether it contains a duplicate sub-tree of size two or more, or not.
+
+Note: Two same leaf nodes are not considered as subtree as size of a leaf node is one. 
+
+Example 1 :
+
+Input : 
+               1
+             /   \ 
+
+           2       3
+         /   \       \    
+        4     5       2     
+                     /  \    
+                    4    5
+Output : 1
+Explanation : 
+    2     
+  /   \    
+ 4     5
+is the duplicate sub-tree.
+
+class Solution {
+    String inorder(Node root,HashMap<String,Integer> hm){
+        if(root==null){
+            return "";
+        }
+        String str="(";
+        str+=inorder(root.left,hm);
+        str+=Integer.toString(root.data);
+        str+=inorder(root.right,hm);
+        str+=")";
+        if(str.length()>4){
+        if(!hm.containsKey(str)){
+            hm.put(str,1);
+        }else{
+            hm.put(str,hm.get(str)+1);
+        }}
+        return str;
+        
+        
+        
+        
+        
+    }
+    int dupSub(Node root) {
+        // code here
+        HashMap<String,Integer> hm=new HashMap<>();
+        inorder( root,hm);
+        Set<String> hmm=hm.keySet();
+        for(String strr:hmm){
+            if(hm.get(strr)>1){
+                return 1;
+            }
+        }
+        return 0;
+    }
+}
+
+Given a Binary Tree with all unique values and two nodes value, n1 and n2. The task is to find the lowest common ancestor of the given two nodes. We may assume that either both n1 and n2 are present in the tree or none of them are present.
+
+LCA: It is the first common ancestor of both the nodes n1 and n2 from bottom of tree.
+
+Example 1:
+
+Input:
+n1 = 2 , n2 = 3  
+       1 
+      / \ 
+     2   3
+Output: 1
+Explanation:
+LCA of 2 and 3 is 1.
+
+class Solution
+{
+    //Function to return the lowest common ancestor in a Binary Tree.
+    
+    // for path
+    boolean path(Node root,int num,ArrayList<Node> al){
+        if(root==null){
+            return false;
+        }
+        al.add(root);
+        if(root.data==num){
+            return true;
+        }
+        boolean lft=path(root.left,num,al);
+        boolean rght=path(root.right,num,al);
+        if(lft||rght){
+            return true;
+        }
+        al.remove(al.size()-1);
+        return false;
+        
+    }
+    
+	Node lca(Node root, int n1,int n2)
+	{
+		// Your code here
+		ArrayList<Node> al1=new ArrayList<>();
+		ArrayList<Node> al2=new ArrayList<>();
+		path(root,n1,al1);
+		path(root,n2,al2);
+		int i=0;
+		for(;i<al1.size()&&i<al2.size();i++){
+		    if(al1.get(i)!=al2.get(i)){
+		        break;
+		    }
+		}
+		return al1.get(i-1);
+		
+		
+	}
+}
+
+The diameter of a tree (sometimes called the width) is the number of nodes on the longest path between two end nodes. The diagram below shows two trees each with diameter nine, the leaves that form the ends of the longest path are shaded (note that there is more than one path in each tree of length nine, but no path longer than nine nodes). 
+
+
+
+Example 1:
+
+Input:
+       1
+     /  \
+    2    3
+Output: 3
+class Solution {
+    // Function to return the diameter of a Binary Tree.inf
+    static class info{
+        int h;
+        int d;
+        info(int d,int h){
+            this.h=h;
+            this.d=d;
+        }
+    }
+    info diam(Node root){
+        if(root==null){
+            return (new info(0,0));
+        }
+        info leftdia=diam(root.left);
+        info rghtdia=diam(root.right);
+        int slfdiam=leftdia.h+rghtdia.h+1;
+        int hght=Math.max(leftdia.h,rghtdia.h)+1;
+        int maxx=Math.max(leftdia.d,rghtdia.d);
+        int diaa=Math.max(slfdiam,maxx);
+        return (new info(diaa,hght));
+    }
+    
+    int diameter(Node root) {
+        // Your code here
+        if(root==null){
+            return 0;
+        }
+        return diam(root).d;
+        
+        
+    }
+}
+Given a binary tree, print the bottom view from left to right.
+A node is included in bottom view if it can be seen when we look at the tree from bottom.
+
+                      20
+                    /    \
+                  8       22
+                /   \        \
+              5      3       25
+                    /   \      
+                  10    14
+
+For the above tree, the bottom view is 5 10 3 14 25.
+If there are multiple bottom-most nodes for a horizontal distance from root, then print the later one in level traversal. For example, in the below diagram, 3 and 4 are both the bottommost nodes at horizontal distance 0, we need to print 4.
+class Solution
+{
+    //Function to return a list containing the bottom view of the given tree.
+    static class info{
+        int pos;
+        Node node;
+        info(int pos, Node node){
+            this.pos=pos;
+            this.node=node;
+        }
+    }
+    public ArrayList <Integer> bottomView(Node root)
+    {
+        // Code here
+        // add your code
+        
+
+      HashMap<Integer,Node> hm=new HashMap<>();
+      Queue<info> q=new LinkedList<>();
+      q.add(new info(0,root));
+      q.add(null);
+      int key=0;
+      hm.put(key,root);
+      int min=0,max=0;
+      ArrayList<Integer> al=new ArrayList<>();
+      while(!q.isEmpty()){
+          info curr=q.remove();
+          if(curr==null){
+              if(q.isEmpty()){
+                  break;
+              }
+              else{
+                  q.add(null);
+              }
+          }else{
+              
+                  hm.put(curr.pos,curr.node);
+              
+              if(curr.node.left!=null){
+                  q.add(new info(curr.pos-1,curr.node.left));
+                  min=Math.min(curr.pos-1,min);
+              }
+              if(curr.node.right!=null){
+                  q.add(new info(curr.pos+1,curr.node.right));
+                  max=Math.max(max,curr.pos+1);
+              }
+             // key=key+1;
+          }
+      }
+      for(int i=min;i<=max;i++){
+          al.add(hm.get(i).data);
+      }
+      return al;
+    }
+}
+
+Given a binary tree of size N. Your task is to complete the function sumOfLongRootToLeafPath(), that find the sum of all nodes on the longest path from root to leaf node.
+If two or more paths compete for the longest path, then the path having maximum sum of nodes is being considered.
+
+Example 1:
+
+Input: 
+        4        
+       / \       
+      2   5      
+     / \ / \     
+    7  1 2  3    
+      /
+     6
+Output: 13
+Explanation:
+        4        
+       / \       
+      2   5      
+     / \ / \     
+    7  1 2  3 
+      /
+     6
+
+The highlighted nodes (4, 2, 1, 6) above are 
+part of the longest root to leaf path having
+sum = (4 + 2 + 1 + 6) = 13
+class Solution{
+    int height(Node root){
+        if(root==null){
+            return 0;
+        }
+        int lh=height(root.left);
+        int rh=height(root.right);
+        return Math.max(lh,rh)+1;
+    }
+    
+    
+    void leafroot(Node root,int level,int k,ArrayList<Node> al){
+        if(root==null){
+            return;
+        }
+        
+        if(level==k){
+            al.add(root);
+            return ;
+        }
+        
+        leafroot(root.left,level+1,k,al);
+        leafroot(root.right,level+1,k,al);
+    
+        
+    }
+    
+    
+    int findsum(Node root,Node num,int currsum){
+        if(root==null){
+            return 0;
+        }
+        currsum+=root.data;
+        if(root==num){
+            return currsum;
+        }
+        
+
+
+        
+        
+        int lh=findsum(root.left,num,currsum);
+        int rh=findsum(root.right,num,currsum);
+        return Math.max(lh,rh);
+        
+    }
+    
+    
+    
+    
+    public int sumOfLongRootToLeafPath(Node root)
+    {
+        //code here
+        int h=height(root);
+        
+        ArrayList<Node> al=new ArrayList<>();
+        
+        leafroot(root,1,h,al);
+        
+        //System.out.println(al.get(0));
+        
+        PriorityQueue<Integer> pq=new PriorityQueue<>();
+        for(int i=0;i<al.size();i++){
+            //int currsum=0;
+            pq.add(findsum(root,al.get(i),0));
+            
+        }
+        
+        int tem=0;
+        int num=al.size();
+        int i=0;
+        while(i<num){
+            tem=pq.poll();
+            //System.out.println(tem);
+            i++;
+        }
+        return tem;
+        
+        
+    
+        
+    }
+}
+
+We've got offers as great as this problem! Explore Geek Week 2023
+
+banner
+Given a binary tree and two node values your task is to find the minimum distance between them.
+The given two nodes are guaranteed to be in the binary tree and nodes are numbered from 1 to N.
+Please Note that a and b are not always leaf node.
+
+Example 1:
+
+Input:
+        1
+      /  \
+     2    3
+a = 2, b = 3
+Output: 2
+Explanation: The tree formed is:
+       1
+     /   \ 
+    2     3
+We need the distance between 2 and 3.
+Being at node 2, we need to take two
+steps ahead in order to reach node 3.
+The path followed will be:
+2 -> 1 -> 3. Hence, the result is 2. 
+class GfG {
+    
+    boolean path(Node root,int num,ArrayList<Node> al){
+        if(root==null){
+            return false;
+        }
+        al.add(root);
+        if(root.data==num){
+            return true;
+        }
+        boolean lft=path(root.left,num,al);
+        boolean rght=path(root.right,num,al);
+        if(lft||rght){
+            return true;
+        }
+        al.remove(al.size()-1);
+        return false;
+        
+    }
+    
+	Node lca(Node root, int n1,int n2)
+	{
+		// Your code here
+		ArrayList<Node> al1=new ArrayList<>();
+		ArrayList<Node> al2=new ArrayList<>();
+		path(root,n1,al1);
+		path(root,n2,al2);
+		int i=0;
+		for(;i<al1.size()&&i<al2.size();i++){
+		    if(al1.get(i)!=al2.get(i)){
+		        break;
+		    }
+		}
+		return al1.get(i-1);
+		
+		
+	}
+	
+	int getdis(Node root,int n,int currsum){
+	    if(root==null){
+	        return 0;
+	    }
+	    currsum+=1;
+	    if(root.data==n){
+	        return currsum;
+	    }
+	    int lc=getdis(root.left,n,currsum);
+	    int rc=getdis(root.right,n,currsum);
+	    return Math.max(lc,rc);
+	    
+	    
+	}
+    
+    
+    int findDist(Node root, int a, int b) {
+        // Your code here
+        Node lcaa=lca(root,a,b);
+        int dis1=getdis( lcaa,a,0);
+        int dis2=getdis( lcaa,b,0);
+        return dis1+dis2-2;
+        
+    }
+}
+
+Given a Binary Tree, print the diagonal traversal of the binary tree.
+
+Consider lines of slope -1 passing between nodes. Given a Binary Tree, print all diagonal elements in a binary tree belonging to same line.
+If the diagonal element are present in two different subtress then left subtree diagonal element should be taken first and then right subtree. 
+
+Example 1:
+
+Input :
+            8
+         /     \
+        3      10
+      /   \      \
+     1     6     14
+         /   \   /
+        4     7 13
+Output : 8 10 14 3 6 7 13 1 4
+Explanation:
+unnamed
+Diagonal Traversal of binary tree : 
+ 8 10 14 3 6 7 13 1 4
+
+class Tree
+{
+     public ArrayList<Integer> diagonal(Node root)
+      {
+           //add your code here.
+           Queue<Node> q=new LinkedList<>();
+           ArrayList<Integer> al=new ArrayList<>();
+           q.add(root);
+           q.add(null);
+          // al.add(root.data);
+           while(!q.isEmpty()){
+               Node curr=q.remove();
+               if(curr==null){
+               if(q.isEmpty()){
+                   break;
+               }
+               else{
+                   q.add(null);
+               }
+           }
+           
+           else
+           {
+               
+               // for making it to traverse at diagnal
+             al.add(curr.data);
+              while(curr!=null){
+              
+                 //all the left of diagnal will be at diff diagnl
+                 //so it will be added to queue
+                if(curr.left!=null){
+                    q.add(curr.left);
+                }
+                
+                // all the right elelements of the curr will be at same diagnal
+                //so it will get printed
+                 if(curr.right!=null){
+                    al.add(curr.right.data);
+               
+                
+                }
+                //for traversing to right to add all the node in same diagnol 
+                  curr=curr.right;
+              
+
+                }
+        
+            }
+               
+        }
+           //System.out.println();
+        return al;
+           
+    }
+}
+
+Given a binary tree in which each node element contains a number. Find the maximum possible path sum from one special node to another special node.
+
+Note: Here special node is a node which is connected to exactly one different node.
+
+
+Example 1:
+
+Input:      
+           3                               
+         /    \                          
+       4       5                     
+      /  \      
+    -10   4                          
+Output: 16
+Explanation:
+Maximum Sum lies between special node 4 and 5.
+4 + 4 + 3 + 5 = 16.
+
+class Solution
+{
+    int findIt(Node root,int ans,ArrayList<Integer> al){
+        if(root==null){
+            return 0;
+        }
+        if(root.left==null&&root.right==null){
+            return root.data;
+            
+        }
+         if(root.left==null){
+            return (findIt(root.right,ans,al)+root.data);}
+     if(root.right==null){
+            return (findIt(root.left,ans,al)+root.data);
+        }
+        int l=findIt(root.left,ans,al);
+        int r=findIt(root.right,ans,al);
+        
+        ans=Math.max(ans,l+r+root.data);
+        al.add(ans);
+        return (Math.max(l,r)+root.data);
+    }
+    int maxPathSum(Node root)
+    { 
+        // code here
+        ArrayList<Integer> al=new ArrayList<>();
+        int ans=Integer.MIN_VALUE;
+        int t=findIt(root,ans,al);
+        int max=Integer.MIN_VALUE;
+        for(int i=0;i<al.size();i++){
+            if(max<al.get(i)){
+                max=al.get(i);
+            }        
+            
+        }
+        if(root.left==null||root.right==null){
+            max=Math.max(t,max);
+        }
+        
+        return max;
+    }
+}
+
+Given a binary tree, a target node in the binary tree, and an integer value k, find all the nodes that are at distance k from the given target node. No parent pointers are available.
+Note:
+
+You have to return the list in sorted order.
+The tree will not contain duplicate values.
+Example 1:
+
+Input:      
+          20
+        /    \
+      8       22 
+    /   \
+   4    12 
+       /   \
+      10    14
+Target Node = 8
+K = 2
+Output: 10 14 22
+Explanation: The three nodes at distance 2
+from node 8 are 10, 14, 22.
+class Solution
+{
+ //for the subtree of the node
+    static void subtr(Node  root,int k,ArrayList<Integer> al){
+        if(root==null){
+            return;
+        }
+        if(k==0){
+            al.add(root.data);
+        }
+        subtr(root.left,k-1,al);
+        subtr(root.right,k-1,al);
+    
+    }
+    
+    static int findD(Node root,int target,int k,ArrayList<Integer> al){
+        if(root==null){
+            return -1;
+        }
+        
+        if(root.data==target){
+            subtr(root,k,al);
+            return 0;
+        }
+        
+        int dl=findD(root.left,target,k,al);
+        
+        
+        //target in the in left subtree
+        //it will now look int right subtree
+        if(dl!=-1){
+            
+            //beacuse it search for parent
+            if(dl+1==k){
+                al.add(root.data);
+            }
+            else{
+                
+                //we are looking in right 
+                //dis left to root then root to right will be 2
+                subtr(root.right,k-dl-2,al);
+            }
+            return 1+dl;
+        }
+        
+        // same as of left
+        // it is same
+        int dr=findD(root.right,target,k,al);
+        if(dr!=-1){
+            if(dr+1==k){
+                al.add(root.data);
+            }
+            else{
+                subtr(root.left,k-dr-2,al);
+            }
+            return 1+dr;
+            
+        }
+        return -1;
+    }
+    
+    public static ArrayList<Integer> KDistanceNodes(Node root, int target , int k)
+    {
+        // return the sorted list of all nodes at k dist
+       ArrayList<Integer> al=new ArrayList<>();
+        findD(root,target,k,al);
+        Collections.sort(al);
+        
+        return al;
+    }
+}
